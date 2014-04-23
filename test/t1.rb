@@ -11,6 +11,11 @@ assert { add_prop_to_template "Dec", "Country", "StringProperty", "List:<Israel>
 assert { add_prop_to_template "Dec", "BeginDate", "DateProperty", ">2014-01-01" }
 
 assert { create_card "Joe", "Dec" }
-cid = $resp["card"]["id"]
+cid = $resp["card"]["_id"]["$oid"]
 puts ">>>>> #{cid}"
+
+assert { set_card_property cid, "Name", "Joe Shmoe" }
+unsert { set_card_property cid, "Name", "" }
+assert { set_card_property cid, "Country", "PRC" }
+assert { set_card_property cid, "Country", "Israel" }
 exit

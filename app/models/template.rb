@@ -53,10 +53,18 @@ class Template
 		begin
 			prop = get_property(prop_name)
 		rescue Exception => e
-			card.add_error e.message
-			return nil
+			raise e.message
 		end
 		val = prop.validate card, value
 		return val
+	end
+
+	def get_property(name)
+		p = (properties.select {|p| p.name==name})[0]
+		if p
+			return p
+		else
+			raise "i18> Property #{prop_name} does not exists"
+		end
 	end
 end

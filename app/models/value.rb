@@ -2,6 +2,8 @@ class Value
 	include Mongoid::Document
 	include Mongoid::Timestamps
 
-	embedded_in :card, inverse_of: :values
+	belongs_to :card
 	belongs_to :property
+
+	field :value
 end
