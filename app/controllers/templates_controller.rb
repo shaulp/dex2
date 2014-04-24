@@ -4,7 +4,7 @@ class TemplatesController < ApplicationController
       "template" => {"id" => ""},
       "property" => {"name" => "", "type" => "", "validation" => ""}
     },
-    "remove_property" => {
+    "delete_property" => {
       "template" => {"id" => ""},
       "property" => {"name" => "", "conf_key" => ""}
     },

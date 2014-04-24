@@ -7,6 +7,7 @@ class Template
 	field :name, type: String
 
 	embeds_many :properties
+	has_many :cards
 
 	validates :name, presence:true, uniqueness:true
 
@@ -46,7 +47,32 @@ class Template
 
 	def update_property(prop_params)
 	end
+
 	def delete_property(prop_params)
+		name = prop_params["name"]
+		begin
+			prop = get_property(name)
+		rescue Exception => e
+			errors.add :base, e.message
+			return
+		end
+		unless cards.empty?
+			conf_key = prop_params["conf_key"]
+			if conf_key
+				if prop.delete_key != conf_key
+					errors.add :base, "i18> Cannot delete property #{name}. Confirmation key mismatched."
+					return
+				end
+			else
+				key = SecureRandom.uuid
+				prop.delete_key = key
+				save
+				errors.add :base, "i18> Try again and supply key"
+				errors.add :key, key
+				return
+			end
+		end
+		prop.destroy # also destroys related values
 	end
 
 	def validate(card, prop_name, value)

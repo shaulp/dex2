@@ -18,4 +18,14 @@ assert { set_card_property cid, "Name", "Joe Shmoe" }
 unsert { set_card_property cid, "Name", "" }
 assert { set_card_property cid, "Country", "PRC" }
 assert { set_card_property cid, "Country", "Israel" }
+
+assert { create_card "Joe", "Dec" }
+unsert { remove_prop_from_template "Dec", "CustomerID" }
+if $resp["status"]=="error"
+	if $resp["template"]["key"]
+		key = $resp["template"]["key"][0]
+		assert { remove_prop_from_template "Dec", "CustomerID", key}
+	end
+end
+
 exit

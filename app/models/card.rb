@@ -5,7 +5,7 @@ class Card
 	field :title, type: String
 
 	belongs_to :template
-	has_many :values
+	has_many :values, dependent: :destroy
 
 	validates :title, presence:true
 	validates :template, presence:true

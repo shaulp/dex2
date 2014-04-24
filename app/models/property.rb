@@ -4,13 +4,12 @@ class Property
 	include Mongoid::Timestamps
 
 	embedded_in :template, inverse_of: :properties
-	has_many :values
+	has_many :values, dependent: :destroy
 
 	field :name, type: String
 	field :type, type: String
 	field :validation, type: String
 	field :delete_key, type: String
-	field :errors, type:String
 
 	after_initialize :set_conditions
 
@@ -37,7 +36,7 @@ class Property
 	def validate(card, raw_value)
 		value = convert(raw_value)
 		unless value
-			#card.add_property_error self, "i18> Bad property value: #{self.class} / #{raw_value}"
+			card.add_property_error self, "i18> Bad property value: #{self.class} / #{raw_value}"
 			return nil
 		end
 		unless @conditions
@@ -47,5 +46,12 @@ class Property
 			is_valid && condition.check(Conditions::Validator.new(card, self, value))
 		end
 	end
+	def add_error(msg)
+		self.errors.add :base, msg
+		#(@errors ||= []) << msg
+	end
+	#def valid?
+	#	(@errors ||= []).empty?
+	#end
 
 end # class Property
