@@ -1,0 +1,49 @@
+<html>
+<head>
+	<script type="text/javascript" src="javascripts/jquery-2.1.0.js"></script>
+	<script type="text/javascript" src="javascripts/knockout-3.1.0.js"></script>
+	<script type="text/javascript" src="javascripts/dex2-init.js"></script>
+	<script type="text/javascript"></script>
+	<style type="text/css">
+	</style>
+</head>
+<body>
+	<div style="width: 100%; display: table;">
+		<div style="display: table-row">
+			<div style="display: table-cell; border:1px solid black;">
+				<span>Templates</span>
+				<ul data-bind="foreach: templates">
+					<li data-bind="text: $data, click: $root.selectTemplate"></li>
+				</ul>
+			</div>
+			<div style="display: table-cell; border:1px solid black;">
+				<h4>Template:<nbsp/>
+					<span data-bind="text: selectedTemplateName"></span></h4>
+				<table class="properties" data-bind="with: selectedTemplate" style="border:1px solid black;">
+					<thead><tr><th>Name</th><th>Type</th><th>Validation</th><th>Delete</th></tr></thead>
+					<tbody>
+						<!-- ko foreach: properties -->
+						<tr>
+							<td data-bind="text: name" style="border:1px solid black;"></td>
+							<td data-bind="text: type" style="border:1px solid black;"></td>
+							<td data-bind="text: validation" style="border:1px solid black;"></td>
+							<td style="border:1px solid black;">
+								<button data-bind="click: $root.deleteProperty">Del</button>
+							</td>
+						</tr>
+						<!-- /ko -->
+						<tr>
+							<td><input type="text" id="prop_name" /></td>
+							<td><input type="text" id="prop_type" /></td>
+							<td><input type="text" id="prop_validation" /></td>
+							<td>
+								<button data-bind="click: $root.addProperty">Add</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

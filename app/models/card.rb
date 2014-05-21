@@ -3,6 +3,7 @@ class Card
 	include Mongoid::Timestamps
 
 	field :title, type: String
+	field :is_valid, type: Boolean
 
 	belongs_to :template
 	has_many :values, dependent: :destroy

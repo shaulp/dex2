@@ -1,37 +1,33 @@
 class TemplatesController < ApplicationController
   ParamsTemplate = {
     "add_property" => {
-      "template" => {"id" => ""},
+      "template" => {"id" => "", "name" => ""},
       "property" => {"name" => "", "type" => "", "validation" => ""}
     },
     "delete_property" => {
-      "template" => {"id" => ""},
+      "template" => {"id" => "", "name" => ""},
       "property" => {"name" => "", "conf_key" => ""}
     },
     "update_property" => {
-      "template" => {"id" => ""},
+      "template" => {"id" => "", "name" => ""},
       "property" => {"name" => "", "type" => "", "validation" => ""}
-    }
+    },
+    "update" => {}
   }
 
   before_action :set_template, only: [:show, :edit, :update, :destroy, :add_property, :update_property, :delete_property]
   before_action :property_actions, only: [:add_property, :update_property, :delete_property]
 
-
   # GET /templates
   # GET /templates.json
   def index
-    if params[:name]
-      @template = Template.find_by_name(params[:name])
-      if @template
-        respond_ok "template", @template
-      else
-        respond_err "template", Template.new, "i18> No template found"
-      end
+    if params[:name] || params[:id]
+      set_template # responds an error if template not found
+      respond_ok "template", @template
     else
       @templates = Template.all
       if @templates.any?
-        respond_ok "template", @templates
+        respond_ok "template", @templates.map {|t| t.name}
       else
         respond_err "template", @templates, "i18> No template found"
       end
@@ -44,6 +40,7 @@ class TemplatesController < ApplicationController
     respond_ok "template", @templates
   end
 
+=begin
   # GET /templates/new
   def new
   end
@@ -51,6 +48,7 @@ class TemplatesController < ApplicationController
   # GET /templates/1/edit
   def edit
   end
+=end
 
   # POST /templates
   # POST /templates.json
@@ -113,7 +111,7 @@ class TemplatesController < ApplicationController
       if @template
         logger.info ">>>>> Fetched template #{@template.name}"
       else
-        respond_err "template", @templates, "i18> Cannot find template identiier in #{params} not found"
+        respond_err "template", @templates, "i18> Cannot find template identiier in #{params} or template not found"
       end
     end
 

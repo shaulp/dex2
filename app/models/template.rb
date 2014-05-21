@@ -11,8 +11,7 @@ class Template
 
 	validates :name, presence:true, uniqueness:true
 
-=begin
-	before_destroy :verify_no_cards_exists #!!!!!!!!!!!!!!
+	before_destroy :verify_no_cards_exists
 
 	def verify_no_cards_exists
 		if cards.empty?
@@ -22,7 +21,6 @@ class Template
 			return false
 		end
 	end
-=end
 
 	def add_property(params)
 		properties.each do |p|

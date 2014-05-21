@@ -6,12 +6,15 @@ class CardsController < ApplicationController
 	    "property" => {"name" => "", "value" => ""}},
   	"index" => {"title" => ""},
   	"QueryParams" => {"properties" => ""},
-  	"create" =>  {"template" => "", "title" => "", "properties" => ""}
+  	"create" =>  {"template" => "", "title" => "", "properties" => ""},
+    "delete" => {"id" => ""},
+    "update" => {"id" => "", "title" => ""},
+    "query" => {"properties" => {}}
 	}
 
   before_action :set_card, only: [:show, :edit, :update, :destroy, :set, :get]
   before_action :set_template, only:[:create, :index]
-  before_action :set_actual_params, only:[:index, :create, :set]
+  before_action :set_actual_params, only:[:index, :create, :set, :query]
 
   def index
     begin
@@ -37,12 +40,41 @@ class CardsController < ApplicationController
     end
   end
 
+  def destroy
+    if @card.destroy
+      respond_ok "card", @card
+    else
+      respond_err "card", @card, @card.errors
+    end
+  end
+
+  def update
+    if @card.update(@actual_params)
+      respond_ok "card", @card
+    else
+      respond_err "card", @card, @card.errors
+    end
+  end
+
   def set
     @card.set @actual_params["property"]["name"], @actual_params["property"]["value"]
     if @card.errors.empty? && @card.save
       respond_ok "card", @card
     else
       respond_err "card", @card, @card.errors
+    end
+  end
+
+  def query
+    begin
+      @cards = Lookups.cards_with_properties(@actual_params["properties"])
+      if @cards.empty?
+        respond_err "card", Card.new, "i18> No cards found"
+      else
+        respond_ok "card", @cards
+      end
+    rescue Exception => e
+      respond_err "card", Card.new, e.message
     end
   end
 
