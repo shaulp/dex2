@@ -48,10 +48,17 @@ class Property
 	end
 	def add_error(msg)
 		self.errors.add :base, msg
-		#(@errors ||= []) << msg
+		logger.info ">>>>> error added to prop #{self.has_errors?}"
 	end
-	#def valid?
-	#	(@errors ||= []).empty?
-	#end
+	def has_errors?
+		self.errors.any?
+	end
+	def print_errors
+		msg = ''
+		self.errors.each do |key,msgs|
+			msg << msgs << '\n'
+		end
+		msg
+	end
 
 end # class Property

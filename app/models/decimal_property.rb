@@ -1,8 +1,8 @@
 class DecimalProperty < Property
 	ApplicableConditions = [
-	#	Conditions::Mandatory, Conditions::Unique, Conditions::GreaterThan, 
-	#	Conditions::LessThan, Conditions::GreaterOrEqual, Conditions::LessOrEqual, 
-	#	Conditions::List, Conditions::Referrence
+		Conditions::Mandatory, Conditions::Unique, Conditions::GreaterThan, 
+		Conditions::LessThan, Conditions::GreaterOrEqual, Conditions::LessOrEqual, 
+		Conditions::List, Conditions::Referrence
 	]
 
 	def self.applicable_condition?(c)

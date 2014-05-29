@@ -2,8 +2,8 @@
 <head>
 	<script type="text/javascript" src="javascripts/jquery-2.1.0.js"></script>
 	<script type="text/javascript" src="javascripts/knockout-3.1.0.js"></script>
-	<script type="text/javascript" src="javascripts/dex2-init.js"></script>
-	<script type="text/javascript"></script>
+	<script type="text/javascript" src="javascripts/dex2-utils.js"></script>
+	<script type="text/javascript" src="javascripts/dex2-displays.js"></script>
 	<style type="text/css">
 	</style>
 </head>
@@ -11,10 +11,14 @@
 	<div style="width: 100%; display: table;">
 		<div style="display: table-row">
 			<div style="display: table-cell; border:1px solid black;">
-				<span>Templates</span>
+				<h4>Templates</h4>
 				<ul data-bind="foreach: templates">
 					<li data-bind="text: $data, click: $root.selectTemplate"></li>
 				</ul>
+				<div>
+					<input type="text" id="template_name" /><br/>
+					<button data-bind="click: $root.addTemplate">Add</button>
+				</div>
 			</div>
 			<div style="display: table-cell; border:1px solid black;">
 				<h4>Template:<nbsp/>

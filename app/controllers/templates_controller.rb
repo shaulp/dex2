@@ -128,6 +128,7 @@ class TemplatesController < ApplicationController
           return
         end
       end
+      logger.info ">>>>> #{action_name}, #{@template.errors.messages}"
       respond_err "template", @template, @template.errors.messages
     end
 

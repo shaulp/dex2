@@ -24,7 +24,7 @@ class Template
 
 	def add_property(params)
 		properties.each do |p|
-			if p.name == params[:name]
+			if p.name.downcase == params[:name].downcase
 				errors.add p.name.to_sym, "i18> Property already exists"
 				return
 			end
@@ -33,10 +33,10 @@ class Template
 		prop_class = Properties::get_class params[:type]
 		if prop_class
 			p = prop_class.new(params)
-			if p.valid?
-				properties.push p
+			if p.has_errors?
+				errors.add :base, "i18> Error creating property #{params[:name]}: #{p.print_errors}."
 			else
-				errors.add :base, "i18> Error creating property #{params[:name]}: #{p.errors}."
+				properties.push p
 			end
 		else
 			errors.add :base, "i18> #{params[:type]} is not a valid property type."
@@ -58,6 +58,7 @@ class Template
 			conf_key = prop_params["conf_key"]
 			if conf_key
 				if prop.delete_key != conf_key
+					logger.info ">>>>> prop_key: #{prop.delete_key} ? conf_key: #{conf_key}"
 					errors.add :base, "i18> Cannot delete property #{name}. Confirmation key mismatched."
 					return
 				end

@@ -1,6 +1,6 @@
 class LinkProperty
 	ApplicableConditions = [
-		#	Conditions::Mandatory, Conditions::Unique
+		Conditions::Mandatory, Conditions::Unique
 	]
 
 	def self.applicable_condition?(c)
