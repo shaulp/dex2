@@ -12,9 +12,11 @@
 		<div style="display: table-row">
 			<div style="display: table-cell; border:1px solid black;">
 				<h4>Templates</h4>
-				<ul data-bind="foreach: templates">
-					<li data-bind="text: $data, click: $root.selectTemplate"></li>
-				</ul>
+				<!-- ko foreach: templates -->
+					<div data-bind="text: $data, click: $root.selectTemplate">
+						<button data-bind="click: $root.delTemplate">Del</button>
+					</div>
+				<!-- /ko -->
 				<div>
 					<input type="text" id="template_name" /><br/>
 					<button data-bind="click: $root.addTemplate">Add</button>

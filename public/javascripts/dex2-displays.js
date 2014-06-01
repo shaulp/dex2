@@ -29,10 +29,22 @@ function TemplatesViewModel() {
   self.addTemplate = function()
   {
     newTemplateName = document.getElementById("template_name").value;
-    $.post({
+    $.ajax({
       url:"/templates.json",
+      type:'post',
       contentType: "application/json",
-      data:JSON.stringify({name:self.selectedTemplateName()}),
+      data:JSON.stringify({name:newTemplateName}),
+      success:function(resp) { self.handleAddPTemplateResponse(resp); }
+    });
+  }
+  self.delTemplate = function(template_name)
+  {
+    //template_name = document.getElementById("template_name").value;
+    $.ajax({
+      url:"/templates/" + template_name + ".json",
+      type:'delete',
+      contentType: "application/json",
+      data:JSON.stringify({name:newTemplateName}),
       success:function(resp) { self.handleAddPTemplateResponse(resp); }
     });
   }
