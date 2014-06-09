@@ -15,6 +15,8 @@ Dex2::Application.routes.draw do
     end
   end
 
+  get "properties/types" => "templates#property_types"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

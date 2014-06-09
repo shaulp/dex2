@@ -1,8 +1,5 @@
 // dex2-init.js
 
-// delete property key mismatch
-// extract and format errors
-
 function TemplatesViewModel() {
   // Data
   var self = this;
@@ -20,11 +17,17 @@ function TemplatesViewModel() {
   		self.templates(resp.template);
   	});
   };
-  self.selectTemplate = function(name) {
+  self.selectTemplate = function(template) {
+    var name = template.name
   	$.get("/templates.json?name="+name, {}, function(resp) {
   		self.selectedTemplate(resp.template);
       self.selectedTemplateName(resp.template.name);
   	});
+  };
+  self.clearPropertyArea = function()
+  {
+    self.selectedTemplate({name:"", properties:[]});
+    self.selectedTemplateName("");
   };
   self.addTemplate = function()
   {
@@ -34,18 +37,18 @@ function TemplatesViewModel() {
       type:'post',
       contentType: "application/json",
       data:JSON.stringify({name:newTemplateName}),
-      success:function(resp) { self.handleAddPTemplateResponse(resp); }
+      success:function(resp) { self.handleAddTemplateResponse(resp); }
     });
   }
-  self.delTemplate = function(template_name)
+  self.delTemplate = function(template)
   {
-    //template_name = document.getElementById("template_name").value;
+    var name = template.name
     $.ajax({
-      url:"/templates/" + template_name + ".json",
+      url:"/templates/" + name + ".json",
       type:'delete',
       contentType: "application/json",
       data:JSON.stringify({name:newTemplateName}),
-      success:function(resp) { self.handleAddPTemplateResponse(resp); }
+      success:function(resp) { self.handleDelTemplateResponse(resp); }
     });
   }
   self.addProperty = function()
@@ -94,7 +97,7 @@ function TemplatesViewModel() {
         alert("Property not deleted because "+resp.message);
     }
     else
-      self.selectTemplate(self.selectedTemplateName());
+      self.selectTemplate({name:self.selectedTemplateName()});
   };
 
   self.handleAddPropResponse = function(resp)
@@ -102,21 +105,41 @@ function TemplatesViewModel() {
     if (resp.status=="error")
       alert("Property not added because\n"+ Utils.format_messages(resp.template));
     else
-      self.selectTemplate(self.selectedTemplateName());
+      self.selectTemplate({name:self.selectedTemplateName()});
   };
 
-  self.handleAddPTemplateResponse = function(resp)
+  self.handleAddTemplateResponse = function(resp)
   {
     if (resp.status=="error")
       alert("Template not added because\n"+ Utils.format_messages(resp.template));
     else
     {
+      document.getElementById("template_name").value = '';
       self.displayTemplates();
-      self.selectTemplate(newTemplateName);
+      self.selectTemplate({name:newTemplateName});
     }
   }
 
+  self.handleDelTemplateResponse = function(resp)
+  {
+    if (resp.status=="error")
+      alert("Template not deleted because\n"+ Utils.format_messages(resp.template));
+    else
+    {
+      self.displayTemplates();
+      self.clearPropertyArea();
+    }
+  }
+
+  self.loadPropertyTypes = function()
+  {
+    $.get("/properties/types.json", {}, function(resp) {
+      self.PropertyTypes = resp.PropertyTypes;
+    });    
+  }
+
   self.displayTemplates();
+  self.loadPropertyTypes();
 };
 
 $().ready(function() {

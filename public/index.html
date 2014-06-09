@@ -10,16 +10,19 @@
 <body>
 	<div style="width: 100%; display: table;">
 		<div style="display: table-row">
-			<div style="display: table-cell; border:1px solid black;">
+			<div style="display: table-cell; border:1px solid black; width: 20%;">
 				<h4>Templates</h4>
-				<!-- ko foreach: templates -->
-					<div data-bind="text: $data, click: $root.selectTemplate">
-						<button data-bind="click: $root.delTemplate">Del</button>
+				<div style="display: table;">
+					<!-- ko foreach: templates -->
+					<div style="display: table-row">
+						<div style="display: table-cell"><span data-bind="text: $data.name, click: $root.selectTemplate"></span></div>
+						<div style="display: table-cell"><button data-bind="click: $root.delTemplate">Del</button></div>
 					</div>
-				<!-- /ko -->
-				<div>
-					<input type="text" id="template_name" /><br/>
-					<button data-bind="click: $root.addTemplate">Add</button>
+					<!-- /ko -->
+					<div style="display: table-row">
+						<div style="display: table-cell"><input type="text" id="template_name" style="width: 80%;" /></div>
+						<div style="display: table-cell"><button data-bind="click: $root.addTemplate">Add</button></div>
+					</div>
 				</div>
 			</div>
 			<div style="display: table-cell; border:1px solid black;">
@@ -40,7 +43,7 @@
 						<!-- /ko -->
 						<tr>
 							<td><input type="text" id="prop_name" /></td>
-							<td><input type="text" id="prop_type" /></td>
+							<td><input type="option" data-bind="option: PropetyTypes" id="prop_type" /></td>
 							<td><input type="text" id="prop_validation" /></td>
 							<td>
 								<button data-bind="click: $root.addProperty">Add</button>

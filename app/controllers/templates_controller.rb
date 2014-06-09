@@ -23,11 +23,11 @@ class TemplatesController < ApplicationController
   def index
     if params[:name] || params[:id]
       set_template # responds an error if template not found
-      respond_ok "template", @template
+      respond_ok "template", @template, :include => :properties
     else
       @templates = Template.all
       if @templates.any?
-        respond_ok "template", @templates.map {|t| t.name}
+        respond_ok "template", @templates, :include => :properties
       else
         respond_err "template", @templates, "i18> No template found"
       end
@@ -78,12 +78,9 @@ class TemplatesController < ApplicationController
   # DELETE /templates/1
   # DELETE /templates/1.json
   def destroy
-    logger.info ">>>> preparing to destroy #{@template.name}"
     if @template.destroy
-      logger.info ">>>>>> done."
       respond_ok "template", @template
     else
-      logger.info ">>>>>> problems..."
       respond_err "template", @template, @template.errors
     end
   end
@@ -95,45 +92,50 @@ class TemplatesController < ApplicationController
   def delete_property
   end
   
+  def property_types
+    respond_ok "template", {"property_types" => ["StringProperty","DateProperty","DecimalProperty","LinkProperty"]}
+  end
+
   private
-    def set_template
-      if params[:id]
-        tid = Integer(params[:id]) rescue nil
-        if tid
-          @template = Template.where(id:tid)[0] rescue nil
-        else
-          @template = Template.where(name:params[:id])[0] rescue nil
-        end
-      elsif params[:name]
-        @template = Template.where(name:params[:name])[0] rescue nil
-      end
-          
-      if @template
-        logger.info ">>>>> Fetched template #{@template.name}"
+
+  def set_template
+    if params[:id]
+      tid = Integer(params[:id]) rescue nil
+      if tid
+        @template = Template.where(id:tid)[0] rescue nil
       else
-        respond_err "template", @templates, "i18> Cannot find template identiier in #{params} or template not found"
+        @template = Template.where(name:params[:id])[0] rescue nil
+      end
+    elsif params[:name]
+      @template = Template.where(name:params[:name])[0] rescue nil
+    end
+        
+    if @template
+      logger.info ">>>>> Fetched template #{@template.name}"
+    else
+      respond_err "template", @templates, "i18> Cannot find template identiier in #{params} or template not found"
+    end
+  end
+
+  def action_params
+    clean_params ParamsTemplate[action_name], params
+  end
+
+  def property_actions
+    @template.errors.clear
+    @template.send action_name, action_params["property"]
+    if @template.errors.empty?
+      if @template.save
+        respond_ok "template", @template
+        return
       end
     end
+    logger.info ">>>>> #{action_name}, #{@template.errors.messages}"
+    respond_err "template", @template, @template.errors.messages
+  end
 
-    def action_params
-      clean_params ParamsTemplate[action_name], params
-    end
+  def template_params
+    params.require(:template).permit(:name)
+  end
 
-    def property_actions
-      @template.errors.clear
-      @template.send action_name, action_params["property"]
-      if @template.errors.empty?
-        if @template.save
-          respond_ok "template", @template
-          return
-        end
-      end
-      logger.info ">>>>> #{action_name}, #{@template.errors.messages}"
-      respond_err "template", @template, @template.errors.messages
-    end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def template_params
-      params.require(:template).permit(:name)
-    end
 end

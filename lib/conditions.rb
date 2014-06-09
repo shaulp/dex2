@@ -3,7 +3,6 @@
 module Conditions
 
 	def self.extract_conditions(property)
-		puts ">>>>> extract_conditions!! #{property.get_validation}"
 		conditions = []
 		property.get_validation.split(';').each do |text|
 			new_cond = nil
@@ -14,7 +13,6 @@ module Conditions
 				end
 			end
 			if new_cond
-				puts ">>>>> Found #{new_cond.class} condition"
 				if property.class.applicable_condition? (new_cond) 
 					conditions << new_cond
 				end

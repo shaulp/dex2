@@ -17,10 +17,10 @@ class ApplicationController < ActionController::Base
     tmp_params
   end
 
-  def respond_ok(type, object)
+  def respond_ok(type, object, options=nil)
     respond_to do |format|
       format.html { render object}
-      format.json { render json: json_ok_response(type, object) }
+      format.json { render json: json_ok_response(type, object, options) }
     end
   end
 
@@ -34,8 +34,8 @@ class ApplicationController < ActionController::Base
   def json_error_response(object_type ,messages)
     {"status" => "error", object_type.to_s => messages}.to_json
   end
-  def json_ok_response(object_type, object)
-    {"status" => "ok", object_type.to_s => object}.to_json
+  def json_ok_response(object_type, object, options=nil)
+    {"status" => "ok", object_type.to_s => object}.to_json(options)
   end
 
 end
