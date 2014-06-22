@@ -25,7 +25,7 @@ class TemplatesController < ApplicationController
       set_template # responds an error if template not found
       respond_ok "template", @template, :include => :properties
     else
-      @templates = Template.all
+      @templates = Template.order_by(:name => :ascending)
       if @templates.any?
         respond_ok "template", @templates, :include => :properties
       else

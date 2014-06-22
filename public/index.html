@@ -3,12 +3,18 @@
 	<script type="text/javascript" src="javascripts/jquery-2.1.0.js"></script>
 	<script type="text/javascript" src="javascripts/knockout-3.1.0.js"></script>
 	<script type="text/javascript" src="javascripts/dex2-utils.js"></script>
-	<script type="text/javascript" src="javascripts/dex2-displays.js"></script>
+	<script type="text/javascript" src="javascripts/dex2-templates.js"></script>
+	<script type="text/javascript" src="javascripts/dex2-cards.js"></script>
 	<style type="text/css">
 	</style>
 </head>
 <body>
-	<div style="width: 100%; display: table;">
+	<div>
+		<button id="btn_display_admin" onclick="Utils.set_display('admin')" >Admin</button>
+		<nbsp/>
+		<button id="btn_display_cards" onclick="Utils.set_display('cards')" >Cards</button>
+	</div>
+	<div id="template_admin_area" style="width: 100%; display: table;">
 		<div style="display: table-row">
 			<div style="display: table-cell; border:1px solid black; width: 20%;">
 				<h4>Templates</h4>
@@ -27,7 +33,8 @@
 			</div>
 			<div style="display: table-cell; border:1px solid black;">
 				<h4>Template:<nbsp/>
-					<span data-bind="text: selectedTemplateName"></span></h4>
+					<span data-bind="text: selectedTemplateName"></span>
+				</h4>
 				<table class="properties" data-bind="with: selectedTemplate" style="border:1px solid black;">
 					<thead><tr><th>Name</th><th>Type</th><th>Validation</th><th>Delete</th></tr></thead>
 					<tbody>
@@ -43,7 +50,7 @@
 						<!-- /ko -->
 						<tr>
 							<td><input type="text" id="prop_name" /></td>
-							<td><input type="option" data-bind="option: PropetyTypes" id="prop_type" /></td>
+							<td><select id="prop_type" data-bind="options: Globals.PropertyTypes"></select></td>
 							<td><input type="text" id="prop_validation" /></td>
 							<td>
 								<button data-bind="click: $root.addProperty">Add</button>
@@ -54,5 +61,31 @@
 			</div>
 		</div>
 	</div>
-</body>
+
+		<div id="card_operations_area" <h4>
+			<div><h4>Template:<nbsp/>
+				<select id="option_select_template" 
+					data-bind="options: templates, 
+										 optionsText: 'name', 
+										 optionsCaption: 'Select Template...',
+										 event: { change: templateSelectionChanged }">
+				</select>
+			</div>
+			<h4>Template:<nbsp/><span data-bind="text: selectedTemplateName"></span></h4>
+			<table class="properties" data-bind="with: selectedTemplate" style="border:1px solid black;">
+				<thead><tr><th>Name</th><th>Type</th><th>Creterion</th></tr></thead>
+				<tbody>
+					<!-- ko foreach: properties -->
+					<tr>
+						<td data-bind="text: name" style="border:1px solid black;"></td>
+						<td data-bind="text: type" style="border:1px solid black;"></td>
+						<td data-bind="" style="border:1px solid black;">
+							<input type="text" data-bind="attr: {id: searchFieldID}" />
+						</td>
+					</tr>
+					<!-- /ko -->
+				</tbody>
+			</table>
+		</div>
+	</body>
 </html>

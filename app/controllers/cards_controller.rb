@@ -16,6 +16,13 @@ class CardsController < ApplicationController
   before_action :set_template, only:[:create, :index]
   before_action :set_actual_params, only:[:index, :create, :set, :query]
 
+  def home
+    respond_to do |format|
+      format.html { render "home"}
+      format.json { render json: json_err_response("cards", "i18> Use html call for home") }
+    end
+  end
+
   def index
     begin
       @cards = Lookups.cards_with_properties(@actual_params)

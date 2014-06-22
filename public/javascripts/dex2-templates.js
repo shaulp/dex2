@@ -1,4 +1,4 @@
-// dex2-init.js
+// dex2-templates.js
 
 function TemplatesViewModel() {
   // Data
@@ -9,21 +9,27 @@ function TemplatesViewModel() {
   self.templates = ko.observable();
   self.selectedTemplate = ko.observable();
   self.selectedTemplateName = ko.observable();
+  Globals.PropertyTypes = ko.observableArray(["String","Number"]);
 
   // Behaviours
 
   self.displayTemplates = function () {
+    self.templates([]);
   	$.get("/templates.json", {}, function(resp) {
   		self.templates(resp.template);
   	});
   };
+
   self.selectTemplate = function(template) {
     var name = template.name
-  	$.get("/templates.json?name="+name, {}, function(resp) {
-  		self.selectedTemplate(resp.template);
-      self.selectedTemplateName(resp.template.name);
-  	});
+    Utils.get_template(name, self.selectedTemplateResponse, null);
   };
+
+  self.selectedTemplateResponse = function(resp) {
+    self.selectedTemplate(resp.template);
+    self.selectedTemplateName(resp.template.name);
+  };
+
   self.clearPropertyArea = function()
   {
     self.selectedTemplate({name:"", properties:[]});
@@ -134,7 +140,7 @@ function TemplatesViewModel() {
   self.loadPropertyTypes = function()
   {
     $.get("/properties/types.json", {}, function(resp) {
-      self.PropertyTypes = resp.PropertyTypes;
+      Globals.PropertyTypes = resp.template.property_types;
     });    
   }
 
@@ -142,6 +148,6 @@ function TemplatesViewModel() {
   self.loadPropertyTypes();
 };
 
-$().ready(function() {
-	ko.applyBindings(new TemplatesViewModel());
-});
+//$().ready(function() {
+//	ko.applyBindings(new TemplatesViewModel(), document.getElementById("template_admin_area"));
+//});
