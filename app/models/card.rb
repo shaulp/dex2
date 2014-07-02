@@ -1,5 +1,5 @@
 class Card
-  include Mongoid::Document
+ 	include Mongoid::Document
 	include Mongoid::Timestamps
 
 	field :title, type: String
@@ -30,6 +30,7 @@ class Card
 	}
 
 	def set(name, new_val)
+		puts ">>>>> set #{name} = #{new_val}"
 		errors.clear
 		begin
 			property = template.get_property(name)
@@ -62,6 +63,32 @@ class Card
 	end
 	def add_property_error(property, message)
 		errors.add property.name.to_sym, message
+	end
+
+	def set_properties(properties)
+		properties.each do |k,v|
+			set k,v
+			return if errors.any?
+		end
+	end
+
+	def save
+		logger.info ">>>>> Doing my own save...!"
+		template.properties.each do |p|
+			logger.info ">>>>> looking for value of #{p.name}"
+			v = Value.where(card:self, property:p)[0]
+			unless v
+				logger.info ">>>>> No value for #{p.name}"
+				p.conditions.each do |c|
+					if c.is_a? Conditions::Mandatory
+						add_property_error p, "i18> cannot be empty"
+						return false
+					end
+				end
+			end
+		end
+
+		super()
 	end
 
 end

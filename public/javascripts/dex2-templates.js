@@ -148,6 +148,6 @@ function TemplatesViewModel() {
   self.loadPropertyTypes();
 };
 
-//$().ready(function() {
-//	ko.applyBindings(new TemplatesViewModel(), document.getElementById("template_admin_area"));
-//});
+$().ready(function() {
+	ko.applyBindings(new TemplatesViewModel(), document.getElementById("template_admin_area"));
+});

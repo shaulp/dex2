@@ -18,8 +18,13 @@ class TemplatesController < ApplicationController
   before_action :set_template, only: [:show, :edit, :update, :destroy, :add_property, :update_property, :delete_property]
   before_action :property_actions, only: [:add_property, :update_property, :delete_property]
 
-  # GET /templates
-  # GET /templates.json
+  def home
+    respond_to do |format|
+      format.html { render "home"}
+      format.json { render json: json_err_response("cards", "i18> Use html call for home") }
+    end
+  end
+
   def index
     if params[:name] || params[:id]
       set_template # responds an error if template not found

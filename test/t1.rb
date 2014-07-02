@@ -2,6 +2,9 @@ require_relative 'basic'
 
 $verbose = true
 
+exec { search_cards({"title" => "Joe", "Country" => "Israel"}) }
+exit
+
 exec { delete_template "Dec" } 
 assert { create_template "Dec" }
 assert { add_prop_to_template "Dec", "CustomerID", "StringProperty", "Mandatory;Max-length:4" }

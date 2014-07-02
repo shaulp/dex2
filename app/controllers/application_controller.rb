@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
   end
 
   def respond_err(type, object, msg)
+    logger.info ">>>>>!! #{msg[:all]}"
     respond_to do |format|
       format.html { render object}
       format.json { render json: json_error_response(type, msg) }

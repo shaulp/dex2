@@ -6,7 +6,7 @@ class CardsController < ApplicationController
 	    "property" => {"name" => "", "value" => ""}},
   	"index" => {"title" => ""},
   	"QueryParams" => {"properties" => ""},
-  	"create" =>  {"template" => "", "title" => "", "properties" => ""},
+  	"create" =>  {"template" => "", "title" => "", "properties" => {}},
     "delete" => {"id" => ""},
     "update" => {"id" => "", "title" => ""},
     "query" => {"properties" => {}}
@@ -38,8 +38,9 @@ class CardsController < ApplicationController
   end
 
   def create
-    @card = Card.new(@actual_params)
+    @card = Card.new(title:@actual_params['title'])
     @card.template = @template
+    @card.set_properties @actual_params['properties'] if @actual_params['properties']
     if @card.save
       respond_ok "card", @card
     else

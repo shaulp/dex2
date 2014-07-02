@@ -1,6 +1,11 @@
 module Lookups
 
 	def Lookups.cards_with_properties(properties)
+		puts ">>>>> Lookups: #{properties}"
+		Value.where()
+
+
+=begin
 		cards = Card.all
 		properties.each_pair do |property, value|
 			if property=="template"
@@ -11,7 +16,9 @@ module Lookups
 				cards = cards.where('packed_properties like ?', "%\"#{property}\":\"#{value}\"%")
 			end
 		end
+		puts ">>>>> Lookups found: #{cards.count}"
 		cards
+=end
 	end
 
 	def Lookups.revalidate(template, property)

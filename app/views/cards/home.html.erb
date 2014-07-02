@@ -1,5 +1,5 @@
-<% content_for :javascript_includes do %>
-  <%= javascript_include_tag "javascripts/dex2-cards.js" %>
+<% content_for :head do %>
+	<script type="text/javascript" src="javascripts/dex2-cards.js"></script>
 <% end %>
 
 <div id="card_operations_area" <h4>
@@ -9,21 +9,32 @@
 								 optionsText: 'name', 
 								 optionsCaption: 'Select Template...',
 								 event: { change: templateSelectionChanged }">
-		</select>
+		</select></h4>
 	</div>
-	<h4>Template:<nbsp/><span data-bind="text: selectedTemplateName"></span></h4>
+	<div>
+		<input type="radio" name="action" id="action_create">Create</input>
+		<input type="radio" name="action" id="action_search">Search</input>
+	</div>
 	<table class="properties" data-bind="with: selectedTemplate" style="border:1px solid black;">
-		<thead><tr><th>Name</th><th>Type</th><th>Creterion</th></tr></thead>
+		<thead><tr><th>Property</th><th>Type</th><th>Value</th></tr></thead>
 		<tbody>
+			<tr>
+				<td style="border:1px solid black;"><b>Title</b></td>
+				<td style="border:1px solid black;">StringProperty</td>
+				<td style="border:1px solid black;">
+					<input type="text" id="value_title" name="" />
+				</td>
+			</tr>
 			<!-- ko foreach: properties -->
 			<tr>
 				<td data-bind="text: name" style="border:1px solid black;"></td>
 				<td data-bind="text: type" style="border:1px solid black;"></td>
 				<td data-bind="" style="border:1px solid black;">
-					<input type="text" data-bind="attr: {id: searchFieldID}" />
+					<input type="text" data-bind="attr: {id: 'value_'+name, name:'value_field'}" />
 				</td>
 			</tr>
 			<!-- /ko -->
 		</tbody>
 	</table>
+	<button id="search_cards" data-bind="click: doCardAction">Go !</button>
 </div>
