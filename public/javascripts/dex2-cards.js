@@ -6,6 +6,10 @@ function CardsViewModel() {
   self.templates = ko.observable();
   self.selectedTemplate = ko.observable();
   self.selectedTemplateName = ko.observable();
+  self.searchResults = ko.observable();
+  var curr_template = null;
+  var empty_result_set = {card:[]};
+  var base_value_set = {};
 
   // Behavior
   self.loadTemplates = function () {
@@ -22,6 +26,13 @@ function CardsViewModel() {
   }
 
   self.selectedTemplateResponse  = function(resp) {
+    curr_template = resp.template;
+    base_value_set = {};
+    for (var i=0; i<curr_template.properties.length; i++)
+    {
+      prop = curr_template.properties[i];
+      base_value_set[prop.name] = '';
+    }
 	  self.selectedTemplate(resp.template);
     self.selectedTemplateName(resp.template.name);
   };
@@ -34,8 +45,10 @@ function CardsViewModel() {
   self.doCardAction = function()
   {
     var template = self.getSelectedTemplate();
+    var params = {"template_name":template, "properties":{}};
     var title = document.getElementById("value_title").value;
-    var params = {"template_name":template, "title":title, "properties":{}};
+    if (title) params.title = title;
+
     var fields = document.getElementsByName("value_field");
     for (var i=0; i<fields.length; i++)
     {
@@ -57,7 +70,65 @@ function CardsViewModel() {
 
   self.displaySearchResults = function(results)
   {
-    alert(results);
+    var result_set = {card:[]};
+
+    if (results.status=='ok')
+    {
+      for (var i=0; i<results.cards.length; i++)
+      {
+        var card = results.cards[i];
+        var values = $.extend({}, base_value_set);
+        for (var j=0; j<card.properties.length; j++)
+        {
+          var prop = card.properties[j];
+          values[prop.name] = prop.value;
+        }
+        var card_data = {title:card.title, values: Utils.extract_values(values)};
+        result_set['card'].push(card_data);
+      }
+      self.searchResults(result_set);
+      document.getElementById('card_list').style.display = 'block';
+    }
+    else
+    {
+      self.searchResults(empty_result_set);
+      document.getElementById('card_list').style.display = 'none';
+    }
+  }
+
+  self.stam = function(results)
+  {
+    var header_set = false;
+    document.getElementById('card_list_header').innerHTML = '';
+    document.getElementById('card_list_body').innerHTML = '';
+
+    for (var i = 0; i < results.card.length; i++) 
+    {
+      var tr_head = document.createElement('tr');
+      var card = results.card[i];
+      var tr = document.createElement('tr');
+      for (var p in card)
+      {
+        if (p=="_id" || p=="template_id") continue;
+        var td = document.createElement('td');
+        td.innerHTML = card[p];
+        tr.appendChild(td);
+
+        if (!header_set)
+        {
+          var td = document.createElement('td');
+          td.innerHTML = p;
+          tr_head.appendChild(td);
+        }
+      }
+      if (!header_set)
+      {
+        document.getElementById('card_list_header').appendChild(tr_head);
+        header_set = true;
+      }
+      document.getElementById('card_list_body').appendChild(tr);
+    }
+    document.getElementById('card_list').style.display = 'block';
   }
 
   self.displayCreateResults = function(results)
@@ -82,4 +153,5 @@ function CardsViewModel() {
 
 $().ready(function() {
 	ko.applyBindings(new CardsViewModel(), document.getElementById("card_operations_area"));
+  document.getElementById('card_list').style.display = 'none';
 });

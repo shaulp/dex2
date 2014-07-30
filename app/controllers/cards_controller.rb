@@ -5,13 +5,13 @@ class CardsController < ApplicationController
 	    "card" => {"id" => ""},
 	    "property" => {"name" => "", "value" => ""}},
   	"index" => {"title" => ""},
-  	"QueryParams" => {"properties" => ""},
   	"create" =>  {"template" => "", "title" => "", "properties" => {}},
     "delete" => {"id" => ""},
     "update" => {"id" => "", "title" => ""},
-    "query" => {"properties" => {}}
+    "query" => {"title" => "", "properties" => {}}
 	}
 
+#   "QueryParams" => {"properties" => ""},
   before_action :set_card, only: [:show, :edit, :update, :destroy, :set, :get]
   before_action :set_template, only:[:create, :index]
   before_action :set_actual_params, only:[:index, :create, :set, :query]
@@ -75,11 +75,12 @@ class CardsController < ApplicationController
 
   def query
     begin
-      @cards = Lookups.cards_with_properties(@actual_params["properties"])
-      if @cards.empty?
+      cards = Lookups.cards_with_properties(template_by_name, @actual_params)
+      if cards.empty?
         respond_err "card", Card.new, "i18> No cards found"
       else
-        respond_ok "card", @cards
+        logger.info ">>>>> responding with #{cards.count} cards"
+        respond_ok "cards", cards.as_json
       end
     rescue Exception => e
       respond_err "card", Card.new, e.message
@@ -87,21 +88,24 @@ class CardsController < ApplicationController
   end
 
 	private
-    def set_actual_params
-      @actual_params = clean_params(ParamsTemplate[action_name], params)
-    end
 
-    def set_template
-      @template = Template.where(name:params[:template_name])[0] rescue nil
-      unless @template
-      #  params[:template] = @template
-      #else
-        respond_err "card", Card.new, "i18> Template '#{params[:template_name]}' not found."
-      end
-    end
+  def set_actual_params
+    @actual_params = clean_params(ParamsTemplate[action_name], params)
+  end
 
-    def set_card
-      @card = Card.where(id:params[:id])[0] rescue nil
-      respond_err "card", Card.new, "i18> Card '#{params[:id]}' not found." unless @card
+  def set_template
+    @template = template_by_name
+    unless @template
+      respond_err "card", Card.new, "i18> Template '#{params[:template_name]}' not found."
     end
+  end
+
+  def set_card
+    @card = Card.where(id:params[:id])[0] rescue nil
+    respond_err "card", Card.new, "i18> Card '#{params[:id]}' not found." unless @card
+  end
+
+  def template_by_name
+    Template.where(name:params[:template_name])[0] rescue nil
+  end
 end

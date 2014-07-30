@@ -89,7 +89,7 @@ class Template
 		if p
 			return p
 		else
-			raise "i18> Property #{prop_name} does not exists"
+			raise "i18> Property #{name} does not exists"
 		end
 	end
 end

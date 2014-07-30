@@ -37,4 +37,25 @@
 		</tbody>
 	</table>
 	<button id="search_cards" data-bind="click: doCardAction">Go !</button>
+	<hr/>
+	<div id="card_list">
+		<table>
+			<thead id="card_list_header" data-bind="with: selectedTemplate">
+				<th>Title</th>
+				<!-- ko foreach: properties -->
+				<th data-bind="text: name"></th>
+				<!-- /ko -->
+			</thead>
+			<tbody id="card_list_body" data-bind="with: searchResults">
+				<!-- ko foreach: card -->
+				<tr>
+					<td data-bind="text: title" ></td>
+					<!-- ko foreach: values -->
+					<td data-bind="text: $data"></td>
+					<!-- /ko -->
+				</tr>
+				<!-- /ko -->
+			</tbody>
+		</table>
+	</div>
 </div>

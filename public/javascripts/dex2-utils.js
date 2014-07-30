@@ -40,3 +40,9 @@ Utils.create_card = function(card_params, ok_callback, err_callback)
 {
 	$.post("/cards.json", card_params, ok_callback, "json");
 }
+Utils.extract_values = function(hash)
+{
+var values = [];
+for (var key in hash) values.push(hash[key]);
+return values;
+}

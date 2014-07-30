@@ -30,11 +30,9 @@ class Card
 	}
 
 	def set(name, new_val)
-		puts ">>>>> set #{name} = #{new_val}"
 		errors.clear
 		begin
 			property = template.get_property(name)
-
 			if template.validate self, name, new_val
 				value = Value.where(card:self, property:property)[0]
 				if value
@@ -72,6 +70,9 @@ class Card
 		end
 	end
 
+	## overrides
+	##
+
 	def save
 		logger.info ">>>>> Doing my own save...!"
 		template.properties.each do |p|
@@ -91,4 +92,14 @@ class Card
 		super()
 	end
 
+	def as_json
+		{
+			'title' => title,
+			'is_valid' => is_valid,
+			'created_at' => created_at,
+			'updated_at' => updated_at,
+			'template' => template.name,
+			'properties' => values.map {|p| p.as_json}
+		}
+	end
 end
